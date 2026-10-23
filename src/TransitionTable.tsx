@@ -3,11 +3,26 @@ import type { Degree } from './theory'
 import { KINDS, type Kind, type Transition } from './transitions'
 
 export const KIND_STYLES: Record<Kind, { cell: string; dot: string }> = {
-  home: { cell: 'bg-emerald-50 text-emerald-900 hover:bg-emerald-100', dot: 'bg-emerald-300' },
-  lift: { cell: 'bg-amber-50 text-amber-900 hover:bg-amber-100', dot: 'bg-amber-300' },
-  drift: { cell: 'bg-sky-50 text-sky-900 hover:bg-sky-100', dot: 'bg-sky-300' },
-  turn: { cell: 'bg-rose-50 text-rose-900 hover:bg-rose-100', dot: 'bg-rose-300' },
-  stay: { cell: 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200', dot: 'bg-zinc-300' },
+  home: {
+    cell: 'bg-emerald-50 text-emerald-950 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-200 dark:hover:bg-emerald-900/50',
+    dot: 'bg-emerald-400 dark:bg-emerald-400',
+  },
+  lift: {
+    cell: 'bg-amber-50 text-amber-950 hover:bg-amber-100 dark:bg-amber-950/40 dark:text-amber-200 dark:hover:bg-amber-900/50',
+    dot: 'bg-amber-400 dark:bg-amber-400',
+  },
+  drift: {
+    cell: 'bg-sky-50 text-sky-950 hover:bg-sky-100 dark:bg-sky-950/40 dark:text-sky-200 dark:hover:bg-sky-900/50',
+    dot: 'bg-sky-400 dark:bg-sky-400',
+  },
+  turn: {
+    cell: 'bg-rose-50 text-rose-950 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-200 dark:hover:bg-rose-900/50',
+    dot: 'bg-rose-400 dark:bg-rose-400',
+  },
+  stay: {
+    cell: 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800',
+    dot: 'bg-zinc-400 dark:bg-zinc-600',
+  },
 }
 
 export interface Selection {
@@ -32,10 +47,14 @@ const ARROWS: Record<string, [number, number]> = {
 function HeaderLabel({ degree, active }: { degree: Degree; active: boolean }) {
   return (
     <span className="flex flex-col items-center leading-tight">
-      <span className={`text-base font-medium ${active ? 'text-zinc-900' : 'text-zinc-600'}`}>
+      <span
+        className={`text-base font-medium transition-colors ${
+          active ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-600 dark:text-zinc-400'
+        }`}
+      >
         {degree.roman}
       </span>
-      <span className="text-xs font-normal text-zinc-400">{degree.chord}</span>
+      <span className="text-xs font-normal text-zinc-400 dark:text-zinc-500">{degree.chord}</span>
     </span>
   )
 }
@@ -68,7 +87,10 @@ export function TransitionTable({ degrees, transitions, selection, onSelect }: P
         </caption>
         <thead>
           <tr>
-            <th scope="col" className="w-16 pb-1 text-left align-bottom text-xs font-normal text-zinc-400">
+            <th
+              scope="col"
+              className="w-16 pb-1 text-left align-bottom text-xs font-normal text-zinc-400 dark:text-zinc-500"
+            >
               <span className="block">откуда ↓</span>
               <span className="block">куда →</span>
             </th>
@@ -97,8 +119,12 @@ export function TransitionTable({ degrees, transitions, selection, onSelect }: P
                       aria-pressed={selected}
                       aria-label={`Из ${fromDegree.roman} (${fromDegree.chord}) в ${toDegree.roman} (${toDegree.chord}): ${cell.label}`}
                       onClick={() => onSelect({ from: row, to: col })}
-                      className={`h-16 w-full cursor-pointer rounded-lg px-1.5 text-center text-xs leading-snug transition-colors duration-150 ${KIND_STYLES[cell.kind].cell} ${
-                        selected ? 'ring-2 ring-zinc-900 ring-offset-1' : ''
+                      className={`h-16 w-full cursor-pointer rounded-lg px-1.5 text-center text-xs leading-snug transition-colors duration-150 ${
+                        KIND_STYLES[cell.kind].cell
+                      } ${
+                        selected
+                          ? 'ring-2 ring-zinc-900 ring-offset-1 ring-offset-white dark:ring-zinc-100 dark:ring-offset-zinc-950'
+                          : ''
                       }`}
                     >
                       {cell.label}
@@ -116,12 +142,13 @@ export function TransitionTable({ degrees, transitions, selection, onSelect }: P
 
 export function Legend() {
   return (
-    <ul className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-zinc-500">
+    <ul className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-zinc-500 dark:text-zinc-400">
       {(Object.keys(KINDS) as Kind[]).map((kind) => (
         <li key={kind} className="flex items-center gap-2">
           <span aria-hidden className={`size-2.5 rounded-full ${KIND_STYLES[kind].dot}`} />
           <span>
-            <span className="text-zinc-700">{KINDS[kind].name}</span> — {KINDS[kind].hint}
+            <span className="text-zinc-700 dark:text-zinc-300">{KINDS[kind].name}</span> —{' '}
+            {KINDS[kind].hint}
           </span>
         </li>
       ))}
